@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 provider "aws" {
     region = "us-east-1"
     #assume_role {
@@ -11,17 +9,5 @@ terraform {
 
   }
 }
-/*
-terraform {
-  backend "s3" {
-    bucket = "test123-example1-app1"
-    key = "terraform.tfstate"
-    dynamodb_table = "terraform_state"
-    region = "us-east-1"
-    encrypt = true
-  }
+block = "10.0.0.0/16"
 }
-*/
-
->>>>>>> Stashed changes
-resource "null_resource" "example" {}
