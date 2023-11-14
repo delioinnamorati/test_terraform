@@ -6,8 +6,8 @@ projects:
 - name: dev
   dir: .
   workflow: dev
-  when_modified: ['*.tf*']
+  #when_modified: ['*.tf*']
 - name: prod
   dir: .
   workflow: prod
-  when_modified: ['*.tf*']
+  #when_modified: ['*.tf*']
