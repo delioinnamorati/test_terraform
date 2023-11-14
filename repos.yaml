@@ -74,10 +74,17 @@ workflows:
       steps:
         - env: 
             name: ENVIRONMENT
-            command: 'if [ "${BASE_BRANCH_NAME}" == "main"]; then echo "prod"; elif [ "${BASE_BRANCH_NAME}" == "develop" ] && [ "${PROJECT_NAME}" != "prod"]; then echo "dev"; elif [ "${BASE_BRANCH_NAME}" == "development" ] && [ "${PROJECT_NAME}" == "prod" ]; then exit 1; else exit 1; fi;'
+            command: | 
+                if [ "${BASE_BRANCH_NAME}" = "main" ]; then 
+                    echo "${PROJECT_NAME}"
+                elif [ "${BASE_BRANCH_NAME}" = "develop" ]; then 
+                    echo "${PROJECT_NAME}"
+                else 
+                    exit 1
+                fi
         - init:
             extra_args:
-              - -backend-config=environment/${PROJECT_NAME}/backend.tfvars
+              - -backend-config=environment/${ENVIRONMENT}/backend.tfvars
         - plan:
             extra_args:
-              - -var-file=environment/${PROJECT_NAME}/${PROJECT_NAME}.tfvars
+              - -var-file=environment/${ENVIRONMENT}/${ENVIRONMENT}.tfvars
