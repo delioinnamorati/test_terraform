@@ -4,10 +4,14 @@ projects:
 # If two or more projects have the same dir and workspace, they must also have
 # a 'name' key to differentiate them.
 - name: dev
+  autoplan:
+    enabled: false
   dir: .
-  workflow: dev
+  workflow: custom
   #when_modified: ['*.tf*']
 - name: prod
   dir: .
-  workflow: prod
+  autoplan:
+    enabled: false
+  workflow: custom
   #when_modified: ['*.tf*']
