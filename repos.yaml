@@ -1,0 +1,83 @@
+# repos lists the config for specific repos.
+repos:
+  # id can either be an exact repo ID or a regex.
+  # If using a regex, it must start and end with a slash.
+  # Repo ID's are of the form {VCS hostname}/{org}/{repo name}, ex.
+  # github.com/runatlantis/atlantis.
+  # this can be used for project specific settings if there's ever a use case for.
+- id: /.*/
+  # branch is an regex matching pull requests by base branch
+  # (the branch the pull request is getting merged into).
+  # By default, all branches are matched
+  branch: /.*/
+
+  # repo_config_file specifies which repo config file to use for this repo.
+  # By default, atlantis.yaml is used.
+  repo_config_file: ./atlantis.yaml
+
+# Meaning of different types of PR state
+  # Approved - SCM approval e.g. reviewer approving a PR ( must be in the list of codeowners, protected branch things)
+  # Mergeable - all checks must pass (defined in protected branch).
+  # UnDiverged - PR must be ahead of base branch!
+
+  # Requiring PR is approved before an applicable subcommand.
+  apply_requirements: [approved, mergeable, undiverged]
+
+  # Requiring PR is approved and mergeable (all checks are green e.g. CI) before an applicable subcommand.
+  import_requirements: [approved, mergeable, undiverged]
+
+  # workflow sets the workflow for all repos that match.
+  # This workflow must be defined in the workflows section.
+  # workflow: custom
+
+  # allowed_overrides specifies which keys can be overridden by this repo in
+  # its atlantis.yaml file.
+  # allowed_overrides: [apply_requirements, workflow, delete_source_branch_on_merge, repo_locking, custom_policy_check]
+
+  # allowed_workflows specifies which workflows the repos that match 
+  # are allowed to select.
+  allowed_workflows: [custom]
+
+  # allow_custom_workflows defines whether this repo can define its own
+  # workflows. If false (default), the repo can only use server-side defined
+  # workflows.
+  allow_custom_workflows: true
+
+  # delete_source_branch_on_merge defines whether the source branch would be deleted on merge
+  # If false (default), the source branch won't be deleted on merge
+  # delete_source_branch_on_merge: true
+
+  # repo_locking defines whether lock repository when planning.
+  # If true (default), atlantis try to get a lock.
+  # repo_locking: true
+
+  # custom_policy_check defines whether policy checking tools besides Conftest are enabled in checks
+  # If false (default), only Conftest JSON output is allowed
+  #custom_policy_check: false
+
+  # pre_workflow_hooks defines arbitrary list of scripts to execute before workflow execution.
+  #pre_workflow_hooks: 
+    #- run: my-pre-workflow-hook-command arg1
+  
+  # post_workflow_hooks defines arbitrary list of scripts to execute after workflow execution.
+  #post_workflow_hooks: 
+    #- run: my-post-workflow-hook-command arg1
+
+  # policy_check defines if policy checking should be enable on this repository.
+  #policy_check: false
+
+
+# workflows lists server-side custom workflows
+workflows:
+  custom:
+    plan:
+      steps:
+        - env: 
+            name: ENVIRONMENT
+            command: 'if [ "${BASE_BRANCH_NAME}" == "main"]; then echo "prod"; elif [ "${BASE_BRANCH_NAME}" == "develop" ] && [ "${PROJECT_NAME}" != "prod"]; then echo "dev"; elif [ "${BASE_BRANCH_NAME}" == "development" ] && [ "${PROJECT_NAME}" == "prod" ]; then exit 1; else exit 1; fi;'
+        - init:
+            extra_args:
+              - -backend-config=environment/${PROJECT_NAME}/backend.tfvars
+        - plan:
+            extra_args:
+              - -var-file=environment/${PROJECT_NAME}/${PROJECT_NAME}.tfvars
