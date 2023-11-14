@@ -6,12 +6,12 @@ projects:
 - name: dev
   autoplan:
     enabled: false
+    when_modified: ['*.tf*']
   dir: .
   workflow: custom
-  #when_modified: ['*.tf*']
 - name: prod
   dir: .
   autoplan:
     enabled: false
+    when_modified: ['*.tf*']
   workflow: custom
-  #when_modified: ['*.tf*']
