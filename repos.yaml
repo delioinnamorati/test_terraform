@@ -84,7 +84,7 @@ workflows:
             name: ENVIRONMENT
             command: echo ${PROJECT_NAME}
         - run: rm -rf .terraform
-        # - run: 'echo Checking if there is an attempt to push to prod && if [ "${ENVIRONMENT}" == "prod" ]; then exit 1; fi;'
+        # - run: 'echo Checking if there is an attempt to push to prod && if [ "${ENVIRONMENT}" = "prod" -a "${BASE_BRANCH_NAME} = "develop" ]; then exit 1; fi;'
         - init:
             extra_args:
               - -backend-config=environment/dev/backend.tfvars
@@ -99,7 +99,7 @@ workflows:
             name: ENVIRONMENT
             command: echo ${PROJECT_NAME}
         - run: rm -rf .terraform
-        # - run: 'echo Checking if there is an attempt to push to prod && if [ "${ENVIRONMENT}" == "prod" ]; then exit 1; fi;'
+        # - run: 'echo Checking if there is an attempt to push to prod && if [ "${ENVIRONMENT}" = "prod" -a "${BASE_BRANCH_NAME} = "develop" ]; then exit 1; fi;'
         - init:
             extra_args:
               - -backend-config=environment/preprod/backend.tfvars

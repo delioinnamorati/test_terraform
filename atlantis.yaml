@@ -5,7 +5,6 @@ projects:
 # If two or more projects have the same dir and workspace, they must also have
 # a 'name' key to differentiate them.
 - name: dev
-  branch: develop
   autoplan:
     enabled: false
     when_modified: ['*.tf*']
@@ -14,7 +13,6 @@ projects:
   workflow: dev
 - name: preprod
   repo_locking: true
-  branch: develop
   autoplan:
     enabled: false
     when_modified: ['*.tf*']
@@ -22,7 +20,6 @@ projects:
   workflow: preprod
 - name: prod
   repo_locking: true
-  branch: main
   dir: .
   autoplan:
     enabled: false
