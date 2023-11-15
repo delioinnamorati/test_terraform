@@ -22,7 +22,7 @@ projects:
   workflow: preprod
 - name: prod
   repo_locking: true
-  branch: /main/
+  branch: /develop/
   dir: .
   autoplan:
     enabled: false

@@ -39,7 +39,7 @@ repos:
 
   # allowed_overrides specifies which keys can be overridden by this repo in
   # its atlantis.yaml file.
-  allowed_overrides: [workflow]
+  allowed_overrides: [workflow,repo_locking]
 
   # allowed_workflows specifies which workflows the repos that match 
   # are allowed to select.
