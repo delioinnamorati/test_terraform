@@ -10,14 +10,14 @@ repos:
   # By default, all branches are matched
   branch: /.*/
 
-  pre_workflow_hooks:
+  #pre_workflow_hooks:
  
-    - description: "Gate prod deployments within develop git branch"
-      run: |
-        if [ "${BASE_BRANCH_NAME}" = "develop" -a "${PROJECT_NAME}" = "prod" ]; then 
-            echo "Can't run prod pipeline for develop branch"
-            exit 1
-        fi
+    #- description: "Running some checks"
+      #run: |
+       # if [ "${BASE_BRANCH_NAME}" = "develop" -a "${PROJECT_NAME}" = "prod" ]; then 
+           # echo "Can't run prod pipeline for develop branch"
+           # exit 1
+        #fi
   # repo_config_file specifies which repo config file to use for this repo.
   # By default, atlantis.yaml is used.
   repo_config_file: ./atlantis.yaml
@@ -81,42 +81,39 @@ workflows:
       steps:
         # needed otherwise TF will complain that backend changed between diff commands
         - env:
-            name: ENVI
+            name: ENVIRONMENT
             command: echo ${PROJECT_NAME}
         - run: rm -rf .terraform
-        - run: 'if [ "${ENVI}" == "prod" ]; then exit 1;'
+        # - run: 'echo Checking if there is an attempt to push to prod && if [ "${ENVIRONMENT}" == "prod" ]; then exit 1; fi;'
         - init:
             extra_args:
-              - -backend-config=environment/${ENVI}/backend.tfvars
+              - -backend-config=environment/dev/backend.tfvars
         - plan:
             extra_args:
-              - -var-file=environment/${ENVI}/${ENVI}.tfvars
+              - -var-file=environment/dev/dev.tfvars
   preprod:
     plan:
       steps:
         # needed otherwise TF will complain that backend changed between diff commands
         - env:
-            name: ENVI
+            name: ENVIRONMENT
             command: echo ${PROJECT_NAME}
         - run: rm -rf .terraform
-        - run: 'if [ "${ENVI}" == "prod" ]; then exit 1;'
+        # - run: 'echo Checking if there is an attempt to push to prod && if [ "${ENVIRONMENT}" == "prod" ]; then exit 1; fi;'
         - init:
             extra_args:
-              - -backend-config=environment/${ENVI}/backend.tfvars
+              - -backend-config=environment/preprod/backend.tfvars
         - plan:
             extra_args:
-              - -var-file=environment/${ENVI}/${ENVI}.tfvars
+              - -var-file=environment/preprod/preprod.tfvars
   prod:
     plan:
       steps:
         # needed otherwise TF will complain that backend changed between diff commands
-        - env:
-            name: ENVI
-            command: echo ${PROJECT_NAME}
         - run: rm -rf .terraform
         - init:
             extra_args:
-              - -backend-config=environment/${ENVI}/backend.tfvars
+              - -backend-config=environment/prod/backend.tfvars
         - plan:
             extra_args:
-              - -var-file=environment/${ENVI}/${ENVI}.tfvars
+              - -var-file=environment/prod/prod.tfvars

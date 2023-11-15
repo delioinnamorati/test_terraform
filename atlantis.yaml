@@ -9,9 +9,11 @@ projects:
   autoplan:
     enabled: false
     when_modified: ['*.tf*']
+  repo_locking: true
   dir: .
   workflow: dev
 - name: preprod
+  repo_locking: true
   branch: /develop/
   autoplan:
     enabled: false
